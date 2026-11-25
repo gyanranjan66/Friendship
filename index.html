@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Friend Meet — Connect Beyond Distance</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0d12;--panel:#141720;--gold:#d8b779;
+  --muted:#9298a6;--white:#f7f5f0;--line:#252a35;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--white);font-family:'DM Sans',sans-serif;min-height:100vh}
+.app{max-width:480px;margin:auto;min-height:100vh;padding:25px 20px 100px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px}
+.brand{font-family:'Playfair Display',serif;font-size:25px;letter-spacing:.3px}
+.brand span{color:var(--gold)}
+.wallet{border:1px solid #51432d;background:#211d16;padding:10px 14px;border-radius:30px;color:var(--gold);font-weight:700}
+.eyebrow{color:var(--gold);font-size:11px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700;margin-bottom:12px}
+h1{font-family:'Playfair Display',serif;font-size:36px;line-height:1.2;font-weight:600}
+.sub{color:var(--muted);font-size:14px;line-height:1.7;margin-top:12px}
+.hero{padding:27px 23px;border:1px solid #39332a;border-radius:23px;background:linear-gradient(135deg,#252017,#15171d 70%);position:relative;overflow:hidden}
+.hero:after{content:"✦";position:absolute;right:22px;top:12px;font-size:65px;color:#d8b77922}
+.primary{margin-top:22px;background:var(--gold);color:#17130d;border:0;border-radius:13px;padding:14px 20px;font-size:14px;font-weight:800;width:100%;cursor:pointer}
+.section-head{display:flex;justify-content:space-between;align-items:center;margin:30px 0 16px}
+h2{font-size:19px;font-weight:700}
+.small{font-size:12px;color:var(--gold)}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.person{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:12px;overflow:hidden}
+.avatar{height:125px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:40px;color:#f5dfb9;background:linear-gradient(145deg,#70523d,#292f3b)}
+.avatar.alt{background:linear-gradient(145deg,#6d465e,#272b40)}
+.person h3{font-size:14px;margin-top:12px}
+.person p{font-size:11px;color:var(--muted);margin-top:5px}
+.rate{font-size:12px;color:var(--gold);margin-top:10px;font-weight:700}
+.status{display:inline-block;width:7px;height:7px;border-radius:50%;background:#62c99b;margin-right:5px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:18px;margin-top:14px}
+.panel p{font-size:13px;color:var(--muted);line-height:1.7}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#11141c;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:13px 8px 20px;z-index:5}
+.nav button{background:none;border:0;color:#9298a6;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer}
+.nav button.active{color:var(--gold)}
+.nav b{font-size:20px;font-weight:500}
+.page{display:none}.page.active{display:block}
+.balance{font-family:'Playfair Display',serif;font-size:32px;color:var(--gold);margin:10px 0}
+.action{background:#222733;border:1px solid var(--line);border-radius:12px;color:white;padding:13px;width:100%;margin-top:12px;font-weight:700}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand">Friend <span>Meet.</span></div>
+    <div class="wallet" onclick="showPage('wallet')">₹ <span id="balance">0</span></div>
+  </header>
+
+  <main>
+    <section class="page active" id="home">
+      <div class="hero">
+        <div class="eyebrow">A world of connections</div>
+        <h1>Meet someone.<br>Make a connection.</h1>
+        <p class="sub">Real conversations, meaningful moments. Discover people and connect face to face.</p>
+        <button class="primary" onclick="showPage('discover')">Discover People&nbsp; →</button>
+      </div>
+      <div class="section-head"><h2>Featured people</h2><span class="small" onclick="showPage('discover')">View all →</span></div>
+      <div class="cards">
+        <div class="person"><div class="avatar">A</div><h3>Aanya</h3><p><span class="status"></span>Available</p><div class="rate">Connect now</div></div>
+        <div class="person"><div class="avatar alt">S</div><h3>Siya</h3><p><span class="status"></span>Available</p><div class="rate">Connect now</div></div>
+      </div>
+      <div class="section-head"><h2>Your experience</h2></div>
+      <div class="panel"><p>✨ Discover new people, start conversations and enjoy a simple, secure way to connect.</p></div>
+    </section>
+
+    <section class="page" id="discover">
+      <div class="eyebrow">Find your connection</div>
+      <h1>Discover people.</h1>
+      <p class="sub">Explore profiles and find someone to talk to.</p>
+      <div class="cards" style="margin-top:22px">
+        <div class="person"><div class="avatar">A</div><h3>Aanya</h3><p><span class="status"></span>Available</p><button class="action" onclick="alert('Video calling will be enabled soon.')">View profile</button></div>
+        <div class="person"><div class="avatar alt">S</div><h3>Siya</h3><p><span class="status"></span>Available</p><button class="action" onclick="alert('Video calling will be enabled soon.')">View profile</button></div>
+      </div>
+    </section>
+
+    <section class="page" id="wallet">
+      <div class="eyebrow">Your account</div>
+      <h1>My Wallet</h1>
+      <div class="panel">
+        <p>Available balance</p>
+        <div class="balance">₹<span id="walletBalance">0</span></div>
+        <p>Your balance and transaction history will appear here.</p>
+        <button class="primary" onclick="alert('Secure payments will be connected in the next stage.')">Add Money</button>
+      </div>
+    </section>
+
+    <section class="page" id="profile">
+      <div class="eyebrow">Personal space</div>
+      <h1>My Profile</h1>
+      <div class="panel">
+        <div class="avatar" style="height:90px;width:90px;border-radius:50%;margin-bottom:17px">U</div>
+        <h2 id="userName">Welcome</h2>
+        <p style="margin-top:8px">Your Friend Meet account</p>
+      </div>
+      <div class="panel"><p>Account settings</p><p style="margin-top:12px">Privacy & Safety</p><p style="margin-top:12px">Help & Support</p></div>
+    </section>
+  </main>
+</div>
+
+<nav class="nav">
+  <button class="active" onclick="showPage('home',this)"><b>⌂</b>Home</button>
+  <button onclick="showPage('discover',this)"><b>◎</b>Discover</button>
+  <button onclick="showPage('wallet',this)"><b>◇</b>Wallet</button>
+  <button onclick="showPage('profile',this)"><b>○</b>Profile</button>
+</nav>
+
+<script>
+const tg=window.Telegram?.WebApp;
+if(tg){
+  tg.ready();
+  tg.expand();
+  const user=tg.initDataUnsafe?.user;
+  if(user){
+    document.getElementById('userName').textContent=user.first_name||'Welcome';
+  }
+}
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  else document.querySelectorAll('.nav button')[id==='wallet'?2:id==='profile'?3:id==='discover'?1:0].classList.add('active');
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>

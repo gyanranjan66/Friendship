@@ -65,11 +65,32 @@ button{font:inherit;color:inherit;border:0;cursor:pointer}
 .nav-item.active svg{fill:#f7c85e22;filter:drop-shadow(0 0 6px #f7c85e66)}
 .nav-badge{position:absolute;top:-3px;right:calc(50% - 27px);min-width:19px;height:19px;padding:0 5px;border-radius:20px;background:#ec3acb;color:white;font-size:11px;font-weight:800;display:grid;place-items:center}
 .toast{position:fixed;z-index:20;left:50%;bottom:100px;transform:translateX(-50%);padding:12px 18px;border:1px solid #5c4668;border-radius:24px;background:#211729;color:white;font-size:13px;box-shadow:0 8px 25px #0009;display:none;max-width:90%;text-align:center}
+
+/* Added Profile screen — existing Home interface above remains unchanged */
+[hidden]{display:none!important}
+.profile-page{min-height:calc(100vh - 110px)}
+.profile-heading{font-family:"Playfair Display",Georgia,serif;font-size:30px;margin:8px 0 18px;color:var(--gold)}
+.profile-card{border:1px solid #60465e;border-radius:28px;padding:22px 18px;background:linear-gradient(140deg,#291a2e,#15111d 65%,#241329);box-shadow:0 10px 28px #0006;text-align:center}
+.profile-avatar{width:94px;height:94px;margin:0 auto 12px;border-radius:50%;border:3px solid var(--gold);background:linear-gradient(135deg,#f044b8,#8d35ed);display:grid;place-items:center;overflow:hidden;font-size:34px;font-weight:800;color:white;box-shadow:0 0 20px #f044b855}
+.profile-avatar img{width:100%;height:100%;object-fit:cover}
+.profile-name{font-size:22px;font-weight:800;margin:0 0 5px}
+.profile-username{font-size:13px;color:var(--muted);margin-bottom:14px}
+.profile-status{display:inline-block;padding:7px 13px;border-radius:20px;background:#19d99a1c;border:1px solid #19d99a66;color:#7af0c5;font-size:12px;font-weight:700}
+.profile-balance{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:16px 0;padding:17px;border:1px solid #8d35ed;border-radius:22px;background:linear-gradient(110deg,#281536,#19102a)}
+.profile-balance small{display:block;color:#d1c7da;font-size:12px;margin-bottom:5px}
+.profile-balance strong{font-size:24px;color:var(--gold)}
+.profile-list{margin-top:16px;border:1px solid var(--line);border-radius:22px;overflow:hidden;background:#15121d}
+.profile-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px;border-bottom:1px solid var(--line);font-size:14px}
+.profile-row:last-child{border-bottom:0}
+.profile-row span:first-child{color:#c7bfce}
+.profile-row strong{max-width:58%;overflow-wrap:anywhere;text-align:right;font-size:13px}
+.profile-note{color:var(--muted);font-size:12px;line-height:1.5;text-align:center;margin:18px 8px}
+.profile-action{width:100%;margin-top:15px;padding:15px;border-radius:24px;background:linear-gradient(100deg,#ffe08a,#f3a900);color:#160e08;font-weight:800}
 @media(max-width:380px){.app{padding-left:12px;padding-right:12px}.hero{min-height:290px}.hero-content{padding:24px 0 22px 18px;width:70%}.hero h1{font-size:34px}.hero p{font-size:14px}.quick-actions{gap:8px}.quick{min-height:105px;font-size:12px;border-radius:22px}.person-photo{height:160px}.person-info{padding:9px 8px 12px}.person-name{font-size:14px}.price{font-size:15px}.recharge{gap:9px;padding:14px 11px}.recharge-icon{width:45px;height:45px}.recharge-copy strong{font-size:16px}.add-money{font-size:12px;padding:11px 10px}}
 </style>
 </head>
 <body>
-<main class="app">
+<main class="app" id="homePage">
   <header class="topbar">
     <div class="brand" aria-label="Friendship">
       <svg class="brand-mark" viewBox="0 0 100 100" role="img" aria-label="Friendship heart video logo">
@@ -130,12 +151,34 @@ button{font:inherit;color:inherit;border:0;cursor:pointer}
     </div>
   </section>
 
-  <!-- Recharge wallet section from the reference design -->
   <section class="recharge">
     <svg class="recharge-icon" viewBox="0 0 64 64" aria-hidden="true"><path d="M8 19 43 8a5 5 0 0 1 6 3l3 9"/><path d="M10 20h42a5 5 0 0 1 5 5v25a5 5 0 0 1-5 5H10a5 5 0 0 1-5-5V25a5 5 0 0 1 5-5Z"/><path d="M42 33h15v12H42a6 6 0 0 1 0-12Z"/><circle cx="46" cy="39" r="1.8" fill="#f0a5ff" stroke="none"/></svg>
     <div class="recharge-copy"><strong>Recharge Wallet</strong><span>Add money to start video calls instantly.</span></div>
     <button class="add-money" onclick="recharge()">Add Money <b>＋</b></button>
   </section>
+</main>
+
+<!-- This is an additional screen; it does not replace or remove the Home screen -->
+<main class="app profile-page" id="profilePage" hidden>
+  <div class="profile-heading">My Profile</div>
+  <section class="profile-card">
+    <div class="profile-avatar" id="profileAvatar">F</div>
+    <h2 class="profile-name" id="profileName">Friendship User</h2>
+    <div class="profile-username" id="profileUsername">Telegram account</div>
+    <span class="profile-status">● Telegram connected</span>
+  </section>
+  <section class="profile-balance">
+    <div><small>Wallet Balance</small><strong>₹0.00</strong></div>
+    <button class="add-money" onclick="recharge()">Add Money ＋</button>
+  </section>
+  <section class="profile-list" aria-label="Account information">
+    <div class="profile-row"><span>Telegram ID</span><strong id="profileId">Not available</strong></div>
+    <div class="profile-row"><span>First Name</span><strong id="profileFirstName">Not available</strong></div>
+    <div class="profile-row"><span>Last Name</span><strong id="profileLastName">Not available</strong></div>
+    <div class="profile-row"><span>Username</span><strong id="profileUserTag">Not available</strong></div>
+  </section>
+  <button class="profile-action" onclick="showMessage('Profile settings will be added next.')">Profile Settings</button>
+  <p class="profile-note">Your profile details are shown from your Telegram account when Friendship is opened inside Telegram.</p>
 </main>
 
 <nav class="bottom-nav" aria-label="Bottom navigation">
@@ -151,24 +194,24 @@ button{font:inherit;color:inherit;border:0;cursor:pointer}
 (function(){
   const tg = window.Telegram && window.Telegram.WebApp;
   if(tg){ tg.ready(); tg.expand(); }
-})();
-let toastTimer;
-function showMessage(message){
-  const el=document.getElementById('toast');
-  el.textContent=message;
-  el.style.display='block';
-  clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>{el.style.display='none';},2600);
-}
-function recharge(){
-  showMessage('Wallet recharge / payment will be connected in the next step.');
-}
-function setTab(button){
-  document.querySelectorAll('.nav-item').forEach(item=>item.classList.remove('active'));
-  button.classList.add('active');
-  const tab=button.getAttribute('data-tab');
-  if(tab!=='Home') showMessage(tab+' section will be connected next.');
-}
-</script>
-</body>
-</html>
+  const user = tg && tg.initDataUnsafe && tg.initDataUnsafe.user;
+  if(user){
+    const fullName = [user.first_name,user.last_name].filter(Boolean).join(' ') || 'Telegram User';
+    document.getElementById('profileName').textContent = fullName;
+    document.getElementById('profileUsername').textContent = user.username ? '@'+user.username : 'Telegram user';
+    document.getElementById('profileId').textContent = user.id || 'Not available';
+    document.getElementById('profileFirstName').textContent = user.first_name || 'Not available';
+    document.getElementById('profileLastName').textContent = user.last_name || 'Not available';
+    document.getElementById('profileUserTag').textContent = user.username ? '@'+user.username : 'Not set';
+    const avatar = document.getElementById('profileAvatar');
+    if(user.photo_url){
+      const img=document.createElement('img');
+      img.src=user.photo_url;
+      img.alt='Telegram profile photo';
+      avatar.textContent='';
+      avatar.appendChild(img);
+    } else {
+      avatar.textContent=(user.first_name || 'F').charAt(0).toUpperCase();
+    }
+  } else {
+    document.getElementById('profileUsername').textContent='Open insi

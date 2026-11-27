@@ -191,27 +191,78 @@ button{font:inherit;color:inherit;border:0;cursor:pointer}
 <div class="toast" id="toast" role="status"></div>
 
 <script>
-(function(){
-  const tg = window.Telegram && window.Telegram.WebApp;
-  if(tg){ tg.ready(); tg.expand(); }
-  const user = tg && tg.initDataUnsafe && tg.initDataUnsafe.user;
-  if(user){
-    const fullName = [user.first_name,user.last_name].filter(Boolean).join(' ') || 'Telegram User';
-    document.getElementById('profileName').textContent = fullName;
-    document.getElementById('profileUsername').textContent = user.username ? '@'+user.username : 'Telegram user';
-    document.getElementById('profileId').textContent = user.id || 'Not available';
-    document.getElementById('profileFirstName').textContent = user.first_name || 'Not available';
-    document.getElementById('profileLastName').textContent = user.last_name || 'Not available';
-    document.getElementById('profileUserTag').textContent = user.username ? '@'+user.username : 'Not set';
-    const avatar = document.getElementById('profileAvatar');
-    if(user.photo_url){
-      const img=document.createElement('img');
-      img.src=user.photo_url;
-      img.alt='Telegram profile photo';
-      avatar.textContent='';
-      avatar.appendChild(img);
-    } else {
-      avatar.textContent=(user.first_name || 'F').charAt(0).toUpperCase();
-    }
+const tg = window.Telegram?.WebApp;
+
+if (tg) {
+  tg.ready();
+  tg.expand();
+}
+
+const user = tg?.initDataUnsafe?.user;
+
+if (user) {
+  const fullName = [user.first_name, user.last_name]
+    .filter(Boolean).join(' ') || 'Telegram User';
+
+  document.getElementById('profileName').textContent = fullName;
+  document.getElementById('profileUsername').textContent =
+    user.username ? '@' + user.username : 'Telegram user';
+  document.getElementById('profileId').textContent = user.id || 'Not available';
+  document.getElementById('profileFirstName').textContent = user.first_name || 'Not available';
+  document.getElementById('profileLastName').textContent = user.last_name || 'Not available';
+  document.getElementById('profileUserTag').textContent =
+    user.username ? '@' + user.username : 'Not set';
+
+  const avatar = document.getElementById('profileAvatar');
+
+  if (user.photo_url) {
+    const img = document.createElement('img');
+    img.src = user.photo_url;
+    img.alt = 'Telegram profile photo';
+    avatar.textContent = '';
+    avatar.appendChild(img);
   } else {
-    document.getElementById('profileUsername').textContent='Open insi
+    avatar.textContent = (user.first_name || 'F').charAt(0).toUpperCase();
+  }
+}
+
+function setTab(button) {
+  const tab = button.dataset.tab;
+
+  if (tab !== 'Home' && tab !== 'Profile') {
+    showMessage(tab + ' page will be added next.');
+    return;
+  }
+
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.classList.remove('active');
+  });
+
+  button.classList.add('active');
+
+  document.getElementById('homePage').hidden = tab !== 'Home';
+  document.getElementById('profilePage').hidden = tab !== 'Profile';
+
+  window.scrollTo(0, 0);
+}
+
+function showMessage(message) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.style.display = 'block';
+
+  clearTimeout(window.friendshipToastTimer);
+
+  window.friendshipToastTimer = setTimeout(() => {
+    toast.style.display = 'none';
+  }, 2500);
+}
+
+function recharge() {
+  showMessage('Wallet payment will be enabled soon.');
+}
+</script>
+</body>
+</html>
+
+  

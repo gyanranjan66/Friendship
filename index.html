@@ -111,7 +111,76 @@ function icon(name,size=24){
 }
 function personCard(p,compact=false){return `<article class="person"><div class="person-photo"><img src="${p.img}" alt="Demo profile photo" loading="lazy"><span class="status-dot"></span></div><div class="person-info"><div class="person-name">${p.name} <span class="verified">✓</span></div><div class="language">${p.language}</div><div class="price">${money(p.rate)}/min</div>${compact?"":`<button class="call-small" onclick="requestCall('${p.name}')">${icon("video",17)} Request call</button>`}</div></article>`}
 function renderPeople(){const q=(document.getElementById("searchInput")?.value||"").trim().toLowerCase();const filtered=people.filter(p=>(p.name+" "+p.language).toLowerCase().includes(q));document.getElementById("explorePeople").innerHTML=filtered.length?filtered.map(p=>`<div class="user-row"><img class="avatar" src="${p.img}" alt=""><div class="user-meta"><strong>${p.name} <span class="verified">✓</span></strong><small>${p.language} · ${money(p.rate)}/min</small></div><button class="outline-btn" onclick="requestCall('${p.name}')">${icon("phone",15)} Call</button></div>`).join(""):`<div class="empty">No matching demo profiles.</div>`}
-function requestCall(name){toast("Call request preview for "+name+". LiveKit calling is not connected yet.");}
+
+async function requestCall(name){
+  try{
+    const tg=window.Telegram.WebApp;
+    const initData=tg.initData;
+    if(!initData){
+      alert("Please open Friendship from Telegram bot.");
+      return;
+    }
+
+    const response=await fetch("https://friendship-backend.gyanranjan500.workers.dev",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        initData:initData,
+        room:"friendship-test"
+      })
+    });
+
+    const data=await response.json();
+    if(!data.success) throw new Error(data.error||"Token failed");
+
+    if(!window.LivekitClient) throw new Error("LiveKit SDK not loaded");
+
+    const room=new LivekitClient.Room();
+    window.friendshipRoom=room;
+
+    const box=document.createElement("div");
+    box.id="friendship-call";
+    box.style="position:fixed;inset:0;z-index:99999;background:#08070d;color:white;padding:15px;overflow:auto";
+    box.innerHTML=`
+      <h3>Friendship Video Call</h3>
+      <p id="callStatus">Connecting...</p>
+      <div id="callVideos"></div>
+      <button id="endFriendshipCall" style="padding:14px;background:#d94b70;color:white;border:0;border-radius:12px">End Call</button>
+    `;
+    document.body.appendChild(box);
+
+    const videos=box.querySelector("#callVideos");
+
+    room.on(LivekitClient.RoomEvent.TrackSubscribed,(track)=>{
+      const el=track.attach();
+      el.style="width:100%;max-height:65vh;border-radius:14px";
+      videos.appendChild(el);
+    });
+
+    await room.connect(data.serverUrl,data.token);
+    await room.localParticipant.enableCameraAndMicrophone();
+
+    room.localParticipant.trackPublications.forEach(pub=>{
+      if(pub.track){
+        const el=pub.track.attach();
+        el.style="width:100%;max-height:35vh;border-radius:14px";
+        videos.prepend(el);
+      }
+    });
+
+    box.querySelector("#callStatus").textContent="Connected";
+
+    box.querySelector("#endFriendshipCall").onclick=async()=>{
+      await room.disconnect();
+      box.remove();
+    };
+
+  }catch(error){
+    alert("Call error: "+error.message);
+    console.error(error);
+  }
+}
+
 function openWallet(){go("wallet")}
 function paymentInfo(){showModal(`<h2>Payment integration</h2><p class="muted">To accept real payments, Friendship needs a payment provider account, a backend to verify payment webhooks, and server-side wallet records. Never add secret keys to this HTML file.</p><div class="modal-actions"><button class="outline-btn" onclick="closeModal()">Close</button></div>`)}
 function showModal(content){document.getElementById("modal").innerHTML=content;document.getElementById("modalBackdrop").classList.add("show")}
@@ -123,5 +192,6 @@ function initTelegram(){if(!tg){return}tg.ready();tg.expand();const u=tg.initDat
 document.getElementById("homePeople").innerHTML=people.map(p=>personCard(p,true)).join("");
 renderPeople();initTelegram();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
 </body>
 </html>
